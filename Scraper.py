@@ -3,10 +3,17 @@ from bs4 import BeautifulSoup
 import time
 
 def NamesOnThisPage(soup, TotalNoOfSongs):
+    SongsOnCurrentPage = ''
     for source in soup.find_all('div', class_ = 'tcarusel-item-title'):
         name = source.a.text
-        print(name)
+        #print(name)
+        SongsOnCurrentPage += name + '\n'
         TotalNoOfSongs +=1
+    print(SongsOnCurrentPage, end = '')
+
+    with open ('ScrappedData.txt', 'a') as f:
+        f.write(SongsOnCurrentPage)
+
     PageNavigation = soup.find('div', class_ = 'navigation')
     
     if(PageNavigation.find_all('a')[-1].text == 'Next'):
@@ -30,6 +37,13 @@ while(NextURL != 'Finished'):
     NextURL, TotalNoOfSongs = NamesOnThisPage(soup, TotalNoOfSongs)
     print("[ Sleeping 5 seconds ]", end = '\r')
     time.sleep(4)
-    print("                      ")
+    print("                      ", end = '\r')
 
 print('[ TOTALSONGS:', TotalNoOfSongs," ]", "\n[ PAGESSCANNED:", PagesScanned, " ]")
+
+with open('ScrappedData.txt', 'a') as f:
+    f.write(f'[ TOTALSONGS: {TotalNoOfSongs} ]\n[ PAGESSCANNED: {PagesScanned} ]')
+
+#-------------------------------------------------------------------------------------------------------------------------------------
+print("[ PRESS ENTER TO CONTINUE ]")
+input()
